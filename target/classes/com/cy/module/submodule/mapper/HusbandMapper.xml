@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.cy.module.submodule.mapper.HusbandMapper" >
+
+  <resultMap id="MultiResultMap" type="com.cy.module.submodule.entity.HusbandMulti" >
+    <association property="husband" resultMap="com.cy.module.submodule.mapper.HusbandMapper.BaseResultMap"/>
+    <association property="wife" resultMap="com.cy.module.submodule.mapper.WifeMapper.BaseResultMap"/>
+  </resultMap>
+
+  <resultMap id="BaseResultMap" type="com.cy.module.submodule.entity.Husband" >
+    <id column="hid" property="hid" jdbcType="INTEGER" />
+    <result column="hname" property="hname" jdbcType="VARCHAR" />
+  </resultMap>
+
+  <sql id="Example_Where_Clause" >
+      <foreach collection="husbandExample.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+        </if>
+      </foreach>
+  </sql>
+
+  <sql id="Example_Where_Clause_Single" >
+    <where >
+      <foreach collection="oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Update_By_Example_Where_Clause_Single" >
+    <where >
+      <foreach collection="example.oredCriteria" item="criteria" separator="or" >
+        <if test="criteria.valid" >
+          <trim prefix="(" suffix=")" prefixOverrides="and" >
+            <foreach collection="criteria.criteria" item="criterion" >
+              <choose >
+                <when test="criterion.noValue" >
+                  and ${criterion.condition}
+                </when>
+                <when test="criterion.singleValue" >
+                  and ${criterion.condition} #{criterion.value}
+                </when>
+                <when test="criterion.betweenValue" >
+                  and ${criterion.condition} #{criterion.value} and #{criterion.secondValue}
+                </when>
+                <when test="criterion.listValue" >
+                  and ${criterion.condition}
+                  <foreach collection="criterion.value" item="listItem" open="(" close=")" separator="," >
+                    #{listItem}
+                  </foreach>
+                </when>
+              </choose>
+            </foreach>
+          </trim>
+        </if>
+      </foreach>
+    </where>
+  </sql>
+  <sql id="Base_Column_List" >
+    hid, hname
+  </sql>
+
+  <select id="selectMultiByExample" resultMap="MultiResultMap" parameterType="com.cy.module.submodule.entity.HusbandMultiExample" >
+    select
+    <if test="husbandExample.distinct" >
+      distinct
+    </if>
+    <include refid="com.cy.module.submodule.mapper.HusbandMapper.Base_Column_List" />
+    ,
+    <include refid="com.cy.module.submodule.mapper.WifeMapper.Base_Column_List" />
+    from husband
+    INNER JOIN wife
+    ON husband.hid = wife.wid
+    <if test="_parameter != null" >
+      <where>
+        <trim prefix="(" suffix=")" prefixOverrides="and">
+          <include refid="com.cy.module.submodule.mapper.HusbandMapper.Example_Where_Clause"/>
+          <include refid="com.cy.module.submodule.mapper.WifeMapper.Example_Where_Clause"/>
+        </trim>
+      </where>
+    </if>
+    <if test="husbandExample.orderByClause != null" >
+      order by ${husbandExample.orderByClause}
+    </if>
+  </select>
+
+  <select id="selectByExample" resultMap="BaseResultMap" parameterType="com.cy.module.submodule.entity.HusbandExample" >
+    select
+    <if test="distinct" >
+      distinct
+    </if>
+    <include refid="Base_Column_List" />
+    from husband
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause_Single" />
+    </if>
+    <if test="orderByClause != null" >
+      order by ${orderByClause}
+    </if>
+  </select>
+  <select id="selectByPrimaryKey" resultMap="BaseResultMap" parameterType="java.lang.Integer" >
+    select 
+    <include refid="Base_Column_List" />
+    from husband
+    where hid = #{hid,jdbcType=INTEGER}
+  </select>
+  <delete id="deleteByPrimaryKey" parameterType="java.lang.Integer" >
+    delete from husband
+    where hid = #{hid,jdbcType=INTEGER}
+  </delete>
+  <delete id="deleteByExample" parameterType="com.cy.module.submodule.entity.HusbandExample" >
+    delete from husband
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause_Single" />
+    </if>
+  </delete>
+  <insert id="insert" parameterType="com.cy.module.submodule.entity.Husband" >
+    insert into husband (hid, hname)
+    values (#{hid,jdbcType=INTEGER}, #{hname,jdbcType=VARCHAR})
+  </insert>
+  <insert id="insertSelective" parameterType="com.cy.module.submodule.entity.Husband" >
+    insert into husband
+    <trim prefix="(" suffix=")" suffixOverrides="," >
+      <if test="hid != null" >
+        hid,
+      </if>
+      <if test="hname != null" >
+        hname,
+      </if>
+    </trim>
+    <trim prefix="values (" suffix=")" suffixOverrides="," >
+      <if test="hid != null" >
+        #{hid,jdbcType=INTEGER},
+      </if>
+      <if test="hname != null" >
+        #{hname,jdbcType=VARCHAR},
+      </if>
+    </trim>
+  </insert>
+  <select id="countByExample" parameterType="com.cy.module.submodule.entity.HusbandExample" resultType="java.lang.Integer" >
+    select count(*) from husband
+    <if test="_parameter != null" >
+      <include refid="Example_Where_Clause_Single" />
+    </if>
+  </select>
+  <update id="updateByExampleSelective" parameterType="map" >
+    update husband
+    <set >
+      <if test="record.hid != null" >
+        hid = #{record.hid,jdbcType=INTEGER},
+      </if>
+      <if test="record.hname != null" >
+        hname = #{record.hname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause_Single" />
+    </if>
+  </update>
+  <update id="updateByExample" parameterType="map" >
+    update husband
+    set hid = #{record.hid,jdbcType=INTEGER},
+      hname = #{record.hname,jdbcType=VARCHAR}
+    <if test="_parameter != null" >
+      <include refid="Update_By_Example_Where_Clause_Single" />
+    </if>
+  </update>
+  <update id="updateByPrimaryKeySelective" parameterType="com.cy.module.submodule.entity.Husband" >
+    update husband
+    <set >
+      <if test="hname != null" >
+        hname = #{hname,jdbcType=VARCHAR},
+      </if>
+    </set>
+    where hid = #{hid,jdbcType=INTEGER}
+  </update>
+  <update id="updateByPrimaryKey" parameterType="com.cy.module.submodule.entity.Husband" >
+    update husband
+    set hname = #{hname,jdbcType=VARCHAR}
+    where hid = #{hid,jdbcType=INTEGER}
+  </update>
+</mapper>
